@@ -1,3 +1,15 @@
 <resources>
-    <string name="app_name">Popular Movies</string>
+    <string name="app_name">Pop Movies</string>
+    <string name="movie_thumb">Movie thumb</string>
+
+    <string name="dialog_already_dismissed">dialog already dismissed</string>
+    <string name="no_internet">NoInternet</string>
+
+    <!--enum для вариантов сортировки по умолчанию-->
+    <string name="first_fresh">first fresh</string>
+    <string name="first_old">first old</string>
+    <string name="first_higher_price">first higher price</string>
+    <string name="first_lower_price">first lower price</string>
+    <string name="alphabetical">A - Z</string>
+    <string name="rev_alphabetical">Z - A</string>
 </resources>
