@@ -48,7 +48,7 @@ public class MyMovieRecyclerViewAdapter extends RecyclerView.Adapter<MyMovieRecy
     }
 
     private void loadImage(ViewHolder holder) {
-        String posterFullUrl = holder.movie.getPosterPathUrlString();
+        String posterFullUrl = holder.movie.getPosterPath();
         if (TextUtils.isEmpty(posterFullUrl) || "".equals(posterFullUrl)) {
             Logger.e(LOG_TAG, "No posterUrlString found in movie. Replacing with Kitty");
             posterFullUrl = "http://kogteto4ka.ru/wp-content/uploads/2012/04/%D0%9A%D0%BE%D1%82%D0%B5%D0%BD%D0%BE%D0%BA.jpg";

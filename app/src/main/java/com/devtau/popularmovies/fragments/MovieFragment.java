@@ -246,7 +246,7 @@ public class MovieFragment extends Fragment {
 
                 Movie oldMovie = moviesSource.getItemByID(movieID);
                 if(oldMovie != null) {
-                    oldMovie.setPosterPathUrlString(moviePosterPath);
+                    oldMovie.setPosterPath(moviePosterPath);
                     moviesSource.update(oldMovie);
                     moviesList.add(oldMovie);
                 } else {

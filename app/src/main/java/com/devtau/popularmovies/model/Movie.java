@@ -4,56 +4,47 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
-import com.devtau.popularmovies.database.tables.MoviesTable;
 import com.devtau.popularmovies.util.Util;
 import java.text.ParseException;
 import java.util.Calendar;
 import static com.devtau.popularmovies.database.tables.MoviesTable.*;
-/**
- *
- */
+
 public class Movie implements Parcelable{
     private long id;
-    private Calendar date = Calendar.getInstance();
-    private int price;
-    private String description;
-    private String posterPathUrlString;
+    private String title;
+    private String posterPath;
+    private String plotSynopsis;
+    private float userRating;
+    private Calendar releaseDate = Calendar.getInstance();
 
-    public Movie(int id, String posterPathUrlString) {
+    public Movie(int id, String posterPath) {
         this.id = id;
-        this.posterPathUrlString = posterPathUrlString;
-    }
-
-    public Movie(Calendar date, int price, String description, String posterPathUrlString) {
-        this.id = -1;
-        this.date = date;
-        this.price = price;
-        this.description = description;
-        this.posterPathUrlString = posterPathUrlString;
+        this.posterPath = posterPath;
     }
 
     public Movie(Cursor cursor) {
         id = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
-        date = null;
+        title = cursor.getString(cursor.getColumnIndex(TITLE));
+        posterPath = cursor.getString(cursor.getColumnIndex(POSTER_PATH));
+        plotSynopsis = cursor.getString(cursor.getColumnIndex(PLOT_SYNOPSIS));
+        userRating = 0f;
         try {
-            date = Calendar.getInstance();
-            String dateString = cursor.getString(cursor.getColumnIndex(MoviesTable.DATE));
-            date.setTime(Util.dateFormat.parse(dateString));
+            releaseDate = Calendar.getInstance();
+            String dateString = cursor.getString(cursor.getColumnIndex(RELEASE_DATE));
+            releaseDate.setTime(Util.dateFormat.parse(dateString));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        price = cursor.getInt(cursor.getColumnIndex(PRICE));
-        description = cursor.getString(cursor.getColumnIndex(DESCRIPTION));
-        posterPathUrlString = cursor.getString(cursor.getColumnIndex(POSTER_PATH_URL_STRING));
     }
 
     private Movie(Parcel parcel) {
         id = parcel.readLong();
-        date = Calendar.getInstance();
-        date.setTimeInMillis(parcel.readLong());
-        price = parcel.readInt();
-        description = parcel.readString();
-        posterPathUrlString = parcel.readString();
+        title = parcel.readString();
+        posterPath = parcel.readString();
+        plotSynopsis = parcel.readString();
+        userRating = parcel.readFloat();
+        releaseDate = Calendar.getInstance();
+        releaseDate.setTimeInMillis(parcel.readLong());
     }
 
     @Override
@@ -71,45 +62,54 @@ public class Movie implements Parcelable{
     }
 
 
-    //геттеры
-    public long getId() {
-        return id;
-    }
 
-    public Calendar getDate() {
-        return date;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getPosterPathUrlString() {
-        return posterPathUrlString;
-    }
-
-
+    //setters
     public void setId(long id) {
         this.id = id;
     }
 
-    public void setPosterPathUrlString(String posterPathUrlString) {
-        this.posterPathUrlString = posterPathUrlString;
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
     }
 
+
+
+    //getters
+    public long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getPosterPath() {
+        return posterPath;
+    }
+
+    public String getPlotSynopsis() {
+        return plotSynopsis;
+    }
+
+    public float getUserRating() {
+        return userRating;
+    }
+
+    public Calendar getReleaseDate() {
+        return releaseDate;
+    }
 
     @Override
     public String toString() {
         return "Movie{" +
                 "id=" + id +
-                ", posterPathUrlString='" + posterPathUrlString + '\'' +
+                ", title='" + title + '\'' +
+                ", posterPath='" + posterPath + '\'' +
+                ", plotSynopsis='" + plotSynopsis + '\'' +
+                ", userRating=" + userRating +
+                ", releaseDate=" + Util.dateFormat.format(releaseDate.getTime()) +
                 '}';
     }
-
 
     //Parcelable methods
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -130,9 +130,10 @@ public class Movie implements Parcelable{
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeLong(id);
-        parcel.writeLong(date.getTimeInMillis());
-        parcel.writeInt(price);
-        parcel.writeString(description);
-        parcel.writeString(posterPathUrlString);
+        parcel.writeString(title);
+        parcel.writeString(posterPath);
+        parcel.writeString(plotSynopsis);
+        parcel.writeFloat(userRating);
+        parcel.writeLong(releaseDate.getTimeInMillis());
     }
 }

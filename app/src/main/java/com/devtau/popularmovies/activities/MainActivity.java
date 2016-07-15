@@ -114,12 +114,13 @@ public class MainActivity extends AppCompatActivity implements
             } else {
                 Logger.d(LOG_TAG, "dialog already dismissed");
             }
-        }, 500);
+        }, 700);
     }
 
     @Override
     public void onListFragmentInteraction(Movie movie) {
-        String msg = movie.toString();
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, MovieDetailsActivity.class);
+        intent.putExtra(MovieDetailsActivity.MOVIE_EXTRA, movie);
+        startActivity(intent);
     }
 }

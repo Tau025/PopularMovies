@@ -65,10 +65,7 @@ public class MoviesSource {
     //moviesSource.getItemsList() would return non-null ArrayList even if it's empty
     public ArrayList<Movie> getItemsList() {
         ArrayList<Movie> itemsList = new ArrayList<>();
-        String sortMethod = "ASC";
-        String selectQuery = "SELECT * FROM " + TABLE_NAME
-                + " ORDER BY " + DATE + " " + sortMethod;
-        Logger.d(LOG_TAG, "getItemsList() selectQuery: " + String.valueOf(selectQuery));
+        String selectQuery = "SELECT * FROM " + TABLE_NAME;
 
         try {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
