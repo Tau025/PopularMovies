@@ -2,8 +2,10 @@
     <string name="app_name">Pop Movies</string>
     <string name="movie_thumb">Movie thumb</string>
 
-    <string name="dialog_already_dismissed">dialog already dismissed</string>
-    <string name="no_internet">NoInternet</string>
+    <string name="no_API_key">This app needs API-key.\nPlease paste it to Constants.API_KEY_VALUE</string>
+    <string name="API_key_length_is_bad">API-key found, but it seems to be too short or too long.\nValid API-key should be 32 chars long.</string>
+    <string name="also">\n\nalso\n\n</string>
+    <string name="no_internet">Check internet connection.</string>
 
     <!--enum для вариантов сортировки по умолчанию-->
     <string name="first_fresh">first fresh</string>

@@ -7,27 +7,29 @@ import android.provider.BaseColumns;
 import com.devtau.popularmovies.database.tables.MoviesTable;
 import com.devtau.popularmovies.util.Util;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import static com.devtau.popularmovies.database.tables.MoviesTable.*;
 /**
- * Класс описывает пример хранимого в клиенте, для которого нужно списковое представление
- * класс хранимого объекта должен:
- * 1 - переопределить методы equals() и hashCode() - для корректного удаления элемента из списка
- * 2 - реализовать Parcelable
+ *
  */
 public class Movie implements Parcelable{
     private long id;
-    private Calendar date;
+    private Calendar date = Calendar.getInstance();
     private int price;
     private String description;
-    private String thumbUrlString;
+    private String posterPathUrlString;
 
-    public Movie(Calendar date, int price, String description) {
-        this.id = -1;//необходимо для использования автоинкремента id новой записи в sql
+    public Movie(int id, String posterPathUrlString) {
+        this.id = id;
+        this.posterPathUrlString = posterPathUrlString;
+    }
+
+    public Movie(Calendar date, int price, String description, String posterPathUrlString) {
+        this.id = -1;
         this.date = date;
         this.price = price;
         this.description = description;
+        this.posterPathUrlString = posterPathUrlString;
     }
 
     public Movie(Cursor cursor) {
@@ -42,6 +44,7 @@ public class Movie implements Parcelable{
         }
         price = cursor.getInt(cursor.getColumnIndex(PRICE));
         description = cursor.getString(cursor.getColumnIndex(DESCRIPTION));
+        posterPathUrlString = cursor.getString(cursor.getColumnIndex(POSTER_PATH_URL_STRING));
     }
 
     private Movie(Parcel parcel) {
@@ -50,6 +53,7 @@ public class Movie implements Parcelable{
         date.setTimeInMillis(parcel.readLong());
         price = parcel.readInt();
         description = parcel.readString();
+        posterPathUrlString = parcel.readString();
     }
 
     @Override
@@ -64,12 +68,6 @@ public class Movie implements Parcelable{
     @Override
     public int hashCode() {
         return (int) (id != -1 ? 31 * id : 0);
-    }
-
-    public void update(Calendar date, int price, String description) {
-        this.date = date;
-        this.price = price;
-        this.description = description;
     }
 
 
@@ -90,18 +88,25 @@ public class Movie implements Parcelable{
         return description;
     }
 
+    public String getPosterPathUrlString() {
+        return posterPathUrlString;
+    }
+
 
     public void setId(long id) {
         this.id = id;
     }
 
+    public void setPosterPathUrlString(String posterPathUrlString) {
+        this.posterPathUrlString = posterPathUrlString;
+    }
+
+
     @Override
     public String toString() {
         return "Movie{" +
                 "id=" + id +
-                ", date=" + Util.dateFormat.format(date.getTime()) +
-                ", price=" + price +
-                ", description='" + description + '\'' +
+                ", posterPathUrlString='" + posterPathUrlString + '\'' +
                 '}';
     }
 
@@ -128,9 +133,6 @@ public class Movie implements Parcelable{
         parcel.writeLong(date.getTimeInMillis());
         parcel.writeInt(price);
         parcel.writeString(description);
-    }
-
-    public String getThumbUrlString() {
-        return thumbUrlString;
+        parcel.writeString(posterPathUrlString);
     }
 }

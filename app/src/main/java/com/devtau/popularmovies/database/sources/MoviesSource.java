@@ -17,6 +17,7 @@ public class MoviesSource {
     //represents top level of abstraction from dataBase
     //all work with db layer must be done in this class
     //getReadableDatabase() and getWritableDatabase() must not be called outside this class
+    private final String LOG_TAG = MoviesSource.class.getSimpleName();
     private static final String ERROR_TOAST = "db access error";
     private MySQLHelper dbHelper;
     private Context context;
@@ -61,12 +62,13 @@ public class MoviesSource {
         return result != -1;
     }
 
+    //moviesSource.getItemsList() would return non-null ArrayList even if it's empty
     public ArrayList<Movie> getItemsList() {
         ArrayList<Movie> itemsList = new ArrayList<>();
         String sortMethod = "ASC";
         String selectQuery = "SELECT * FROM " + TABLE_NAME
                 + " ORDER BY " + DATE + " " + sortMethod;
-        Logger.d("MoviesSource.getItemsList() selectQuery: " + String.valueOf(selectQuery));
+        Logger.d(LOG_TAG, "getItemsList() selectQuery: " + String.valueOf(selectQuery));
 
         try {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -82,7 +84,7 @@ public class MoviesSource {
         } catch (SQLiteException e) {
             Toast.makeText(context, ERROR_TOAST, Toast.LENGTH_SHORT).show();
         }
-        Logger.d("MoviesSource.getItemsList() itemsList.size(): " + String.valueOf(itemsList.size()));
+        Logger.d(LOG_TAG, "getItemsList() itemsList.size(): " + String.valueOf(itemsList.size()));
         return itemsList;
     }
 
@@ -100,21 +102,25 @@ public class MoviesSource {
         } catch (SQLiteException e) {
             Toast.makeText(context, ERROR_TOAST, Toast.LENGTH_SHORT).show();
         }
-        Logger.d("MoviesSource.getItemsCount() itemsCount: " + String.valueOf(itemsCount));
+        Logger.d(LOG_TAG, "getItemsCount() itemsCount: " + String.valueOf(itemsCount));
         return itemsCount;
     }
+
+    public Movie getItemByID(long itemID) {
+        Movie movie = null;
+        String selectQuery = "SELECT * FROM " + TABLE_NAME
+                + " WHERE " + BaseColumns._ID + "='" + String.valueOf(itemID) + "'";
+
+        try {
+            SQLiteDatabase db = dbHelper.getReadableDatabase();
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            if (cursor.moveToFirst()) {
+                movie = new Movie(cursor);
+            }
+            cursor.close();
+        } catch (SQLiteException e) {
+            Toast.makeText(context, ERROR_TOAST, Toast.LENGTH_SHORT).show();
+        }
+        return movie;
+    }
 }
-
-//    db.beginTransaction(); все транзакции нужно делать таким образом
-//    try {
-//        for (DBRow row : insertList) {
-//            // your insert code
-//            insertRow(row);
-//            db.yieldIfContendedSafely();
-//        }
-//        db.setTransactionSuccessful();
-//    } finally {
-//        db.endTransaction();
-//    }
-
-//operators are: "=", "==", "<", "<=", ">", ">=", "!=", "<>", "IN", "NOT IN", "BETWEEN", "IS", and "IS NOT"

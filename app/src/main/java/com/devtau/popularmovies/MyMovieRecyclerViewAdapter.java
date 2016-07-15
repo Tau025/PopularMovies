@@ -1,25 +1,29 @@
 package com.devtau.popularmovies;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import com.devtau.popularmovies.MovieFragment.OnListFragmentInteractionListener;
 import com.devtau.popularmovies.model.Movie;
+import com.devtau.popularmovies.util.Constants;
+import com.devtau.popularmovies.util.Logger;
 import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class MyMovieRecyclerViewAdapter extends RecyclerView.Adapter<MyMovieRecyclerViewAdapter.ViewHolder> {
-    private final List<Movie> movieList;
-    private final OnListFragmentInteractionListener mListener;
+    private final String LOG_TAG = MyMovieRecyclerViewAdapter.class.getSimpleName();
+    private List<Movie> moviesList;
+    private final OnListFragmentInteractionListener listener;
     private int imageWidth;
     private int imageHeight;
 
-    public MyMovieRecyclerViewAdapter(List<Movie> movieList, OnListFragmentInteractionListener listener,
+    public MyMovieRecyclerViewAdapter(List<Movie> moviesList, OnListFragmentInteractionListener listener,
                                       int imageWidth, int imageHeight) {
-        this.movieList = movieList;
-        mListener = listener;
+        this.moviesList = moviesList;
+        this.listener = listener;
         this.imageWidth = imageWidth;
         this.imageHeight = imageHeight;
     }
@@ -33,26 +37,27 @@ public class MyMovieRecyclerViewAdapter extends RecyclerView.Adapter<MyMovieRecy
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.movie = movieList.get(position);
-        String thumbUrlString = holder.movie.getThumbUrlString();
-//        if (!TextUtils.isEmpty(thumbUrlString)) {}
-
+        holder.movie = moviesList.get(position);
         loadImage(holder);
 
         holder.view.setOnClickListener(v -> {
-            if (null != mListener) {
-                mListener.onListFragmentInteraction(holder.movie);
+            if (null != listener) {
+                listener.onListFragmentInteraction(holder.movie);
             }
         });
     }
 
     private void loadImage(ViewHolder holder) {
+        String posterFullUrl = holder.movie.getPosterPathUrlString();
+        if (TextUtils.isEmpty(posterFullUrl) || "".equals(posterFullUrl)) {
+            Logger.e(LOG_TAG, "No posterUrlString found in movie. Replacing with Kitty");
+            posterFullUrl = "http://kogteto4ka.ru/wp-content/uploads/2012/04/%D0%9A%D0%BE%D1%82%D0%B5%D0%BD%D0%BE%D0%BA.jpg";
+        } else {
+            posterFullUrl = Constants.IMAGE_STORAGE_BASE_URL + Constants.POSTER_SIZE + posterFullUrl;
+        }
         Picasso.with(holder.view.getContext())
-                .load("http://kogteto4ka.ru/wp-content/uploads/2012/04/%D0%9A%D0%BE%D1%82%D0%B5%D0%BD%D0%BE%D0%BA.jpg")
-//                .load("http://i.imgur.com/DvpvklR.png")
-//                .load(thumbUrlString)
-                .placeholder(R.mipmap.ic_launcher)
-                .error(android.R.drawable.ic_dialog_alert)
+                .load(posterFullUrl)
+                .error(R.drawable.load_failed)
                 .centerCrop()
                 .resize(imageWidth, imageHeight)
                 .into(holder.movieThumb);
@@ -60,7 +65,12 @@ public class MyMovieRecyclerViewAdapter extends RecyclerView.Adapter<MyMovieRecy
 
     @Override
     public int getItemCount() {
-        return movieList.size();
+        return moviesList.size();
+    }
+
+    public void setList(List<Movie> moviesList){
+        this.moviesList = moviesList;
+        notifyDataSetChanged();
     }
 
 

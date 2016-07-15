@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public abstract class Util {
+    private static final String LOG_TAG = Util.class.getSimpleName();
     //даты храним как строки в соответствии с этим форматтером
     //не работает напрямую с Calendar. его нужно сначала перевести в Date
     public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.UK);
@@ -50,17 +51,17 @@ public abstract class Util {
                 dateToLog.get(Calendar.MONTH) + 1, dateToLog.get(Calendar.YEAR), dateToLog.get(Calendar.HOUR_OF_DAY),
                 dateToLog.get(Calendar.MINUTE), dateToLog.get(Calendar.SECOND));
         if (dateName.length() >= 20) {
-            Logger.d(dateName + log);
+            Logger.d(LOG_TAG, dateName + log);
         } else {
             while (dateName.length() < 20) dateName += '.';
-            Logger.d(dateName + log);
+            Logger.d(LOG_TAG, dateName + log);
         }
     }
 
     //работает только с числом десятичных знаков 0-5
     public static double roundResult(double value, int decimalSigns) {
         if (decimalSigns < 0 || decimalSigns > 5) {
-            Logger.d("decimalSigns meant to be bw 0-5. Request is: " + String.valueOf(decimalSigns));
+            Logger.d(LOG_TAG, "decimalSigns meant to be bw 0-5. Request is: " + String.valueOf(decimalSigns));
             if (decimalSigns < 0) decimalSigns = 0;
             if (decimalSigns > 5) decimalSigns = 5;
         }
