@@ -1,20 +1,16 @@
 package com.devtau.popularmovies;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import com.devtau.popularmovies.fragments.MovieFragment.OnListFragmentInteractionListener;
 import com.devtau.popularmovies.model.Movie;
-import com.devtau.popularmovies.util.Constants;
-import com.devtau.popularmovies.util.Logger;
-import com.squareup.picasso.Picasso;
+import com.devtau.popularmovies.util.Util;
 import java.util.List;
 
 public class MyMovieRecyclerViewAdapter extends RecyclerView.Adapter<MyMovieRecyclerViewAdapter.ViewHolder> {
-    private final String LOG_TAG = MyMovieRecyclerViewAdapter.class.getSimpleName();
     private List<Movie> moviesList;
     private final OnListFragmentInteractionListener listener;
     private int imageWidth;
@@ -38,29 +34,14 @@ public class MyMovieRecyclerViewAdapter extends RecyclerView.Adapter<MyMovieRecy
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.movie = moviesList.get(position);
-        loadImage(holder);
+        Util.loadImageToView(holder.view.getContext(), holder.movie.getPosterPath(), holder.movieThumb,
+                imageWidth, imageHeight);
 
         holder.view.setOnClickListener(v -> {
             if (null != listener) {
                 listener.onListFragmentInteraction(holder.movie);
             }
         });
-    }
-
-    private void loadImage(ViewHolder holder) {
-        String posterFullUrl = holder.movie.getPosterPath();
-        if (TextUtils.isEmpty(posterFullUrl) || "".equals(posterFullUrl)) {
-            Logger.e(LOG_TAG, "No posterUrlString found in movie. Replacing with Kitty");
-            posterFullUrl = "http://kogteto4ka.ru/wp-content/uploads/2012/04/%D0%9A%D0%BE%D1%82%D0%B5%D0%BD%D0%BE%D0%BA.jpg";
-        } else {
-            posterFullUrl = Constants.IMAGE_STORAGE_BASE_URL + Constants.POSTER_SIZE + posterFullUrl;
-        }
-        Picasso.with(holder.view.getContext())
-                .load(posterFullUrl)
-                .error(R.drawable.load_failed)
-                .centerCrop()
-                .resize(imageWidth, imageHeight)
-                .into(holder.movieThumb);
     }
 
     @Override

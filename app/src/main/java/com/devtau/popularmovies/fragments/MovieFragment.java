@@ -14,7 +14,6 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.devtau.popularmovies.BuildConfig;
 import com.devtau.popularmovies.MyMovieRecyclerViewAdapter;
 import com.devtau.popularmovies.R;
 import com.devtau.popularmovies.database.DataSource;
@@ -23,7 +22,6 @@ import com.devtau.popularmovies.model.Movie;
 import com.devtau.popularmovies.util.Constants;
 import com.devtau.popularmovies.util.Logger;
 import com.devtau.popularmovies.util.Util;
-import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,7 +38,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 public class MovieFragment extends Fragment {
-    private final String LOG_TAG = MovieFragment.class.getSimpleName();
     private static final String ARG_ITEMS_LIST = "itemsList";
     private static final String ARG_COLUMN_COUNT = "columnCount";
     private List<Movie> moviesList;
@@ -84,23 +81,6 @@ public class MovieFragment extends Fragment {
         }
 
         calculateParamsOfThumb();
-
-        //cache images
-        if(BuildConfig.DEBUG) {
-            //red corner - network, blue - disk, green - memory
-            Picasso.with(getContext()).setIndicatorsEnabled(true);
-//            Picasso.with(getContext()).setLoggingEnabled(true);
-        }
-
-//        for (Movie movie: moviesList) {
-//            String thumbUrlString = movie.getThumbUrlString();
-//            if (!TextUtils.isEmpty(thumbUrlString)) {
-//                Picasso.with(getContext())
-//                        .load("http://i.imgur.com/DvpvklR.png")
-////                        .load(thumbUrlString)
-//                        .fetch();
-//            }
-//        }
     }
 
     private void calculateParamsOfThumb() {

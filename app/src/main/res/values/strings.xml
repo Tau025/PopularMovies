@@ -21,5 +21,11 @@
         <item>Top rated</item>
     </string-array>
 
-    <string name="title_activity_movie_details">MovieDetailsActivity</string>
+    <string name="title_activity_movie_details">Movie details</string>
+    <string name="user_rating_formatter" formatted="false">%s/10</string>
+
+    <string name="title_example_text">title</string>
+    <string name="release_date_example_text">releaseDate</string>
+    <string name="user_rating_example_text">userRating</string>
+    <string name="plot_synopsis_example_text">plotSynopsis</string>
 </resources>

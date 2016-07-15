@@ -14,8 +14,7 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
-import android.widget.Toast;
-
+import com.devtau.popularmovies.BuildConfig;
 import com.devtau.popularmovies.fragments.MovieFragment;
 import com.devtau.popularmovies.fragments.ProgressBarDF;
 import com.devtau.popularmovies.R;
@@ -24,6 +23,7 @@ import com.devtau.popularmovies.database.sources.MoviesSource;
 import com.devtau.popularmovies.model.Movie;
 import com.devtau.popularmovies.util.Constants;
 import com.devtau.popularmovies.util.Logger;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity implements
         MovieFragment.OnListFragmentInteractionListener {
@@ -34,6 +34,12 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         Logger.isDebug = true;
         setContentView(R.layout.activity_main);
+
+//        if(BuildConfig.DEBUG) {
+            //red corner - network, blue - disk, green - memory
+//            Picasso.with(this).setIndicatorsEnabled(true);
+//            Picasso.with(getContext()).setLoggingEnabled(true);
+//        }
 
         if(selfCheck()) {
             sendRequest();

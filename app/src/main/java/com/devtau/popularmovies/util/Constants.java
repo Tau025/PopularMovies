@@ -4,6 +4,8 @@ public abstract class Constants {
     public static final String IMAGE_STORAGE_BASE_URL = "http://image.tmdb.org/t/p/";
     //    posterSize: "w92", "w154", "w185", "w342", "w500", "w780", or "original"
     public static final String POSTER_SIZE = "w342";
+    public static final int DEFAULT_POSTER_WIDTH = 200;
+    public static final int DEFAULT_POSTER_HEIGHT = 300;
 
     // These are the names of the JSON objects that need to be extracted.
     public static final String RESULTS = "results";
