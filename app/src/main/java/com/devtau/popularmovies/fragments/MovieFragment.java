@@ -1,9 +1,11 @@
-package com.devtau.popularmovies;
+package com.devtau.popularmovies.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +14,9 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.devtau.popularmovies.BuildConfig;
+import com.devtau.popularmovies.MyMovieRecyclerViewAdapter;
+import com.devtau.popularmovies.R;
 import com.devtau.popularmovies.database.DataSource;
 import com.devtau.popularmovies.database.sources.MoviesSource;
 import com.devtau.popularmovies.model.Movie;
@@ -31,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MovieFragment extends Fragment {
+    private final String LOG_TAG = MovieFragment.class.getSimpleName();
     private static final String ARG_ITEMS_LIST = "itemsList";
     private static final String ARG_COLUMN_COUNT = "columnCount";
     private List<Movie> moviesList;
@@ -126,10 +132,11 @@ public class MovieFragment extends Fragment {
 
     private void updateMoviesList() {
         FetchMoviesTask weatherTask = new FetchMoviesTask();
-//        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-//        String locationPref = sharedPref.getString(getString(R.string.pref_location_key),
-//                getString(R.string.pref_location_default));
-        weatherTask.execute();
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortOrder = sharedPref.getString(getString(R.string.pref_sort_order_key),
+                getString(R.string.pref_sort_order_default));
+        Logger.d(LOG_TAG, sortOrder);
+        weatherTask.execute(sortOrder);
     }
 
     @Override
@@ -140,12 +147,12 @@ public class MovieFragment extends Fragment {
 
 
 
-    public class FetchMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
+    public class FetchMoviesTask extends AsyncTask<String, Void, List<Movie>> {
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
         private MoviesSource moviesSource = new DataSource(getContext()).getMoviesSource();
 
         @Override
-        protected List<Movie> doInBackground(Void... voids) {
+        protected List<Movie> doInBackground(String... params) {
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
@@ -154,13 +161,11 @@ public class MovieFragment extends Fragment {
             // Will contain the raw JSON response as a string.
             String forecastJsonStr = null;
 
-            String sortBy = "popularity.desc";
-
             try {
                 // Construct the URL for themoviedb.org query
                 // Possible parameters are available at http://openweathermap.org/API#forecast
                 Uri builtUri = Uri.parse(Constants.MOVIE_BASE_URL).buildUpon()
-                        .appendQueryParameter(Constants.SORT_BY_PARAM, sortBy)
+                        .appendQueryParameter(Constants.SORT_BY_PARAM, params[0])
                         .appendQueryParameter(Constants.API_KEY_PARAM, Constants.API_KEY_VALUE)
                         .build();
                 URL url = new URL(builtUri.toString());

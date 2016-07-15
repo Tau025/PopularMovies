@@ -1,6 +1,7 @@
-package com.devtau.popularmovies;
+package com.devtau.popularmovies.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
@@ -8,10 +9,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.devtau.popularmovies.fragments.MovieFragment;
+import com.devtau.popularmovies.fragments.ProgressBarDF;
+import com.devtau.popularmovies.R;
 import com.devtau.popularmovies.database.DataSource;
 import com.devtau.popularmovies.database.sources.MoviesSource;
 import com.devtau.popularmovies.model.Movie;
@@ -82,6 +89,22 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void dismissProgressBar(){
         //delay applied in order to avoid flickering, when connection is fast
         new Handler().postDelayed(() -> {
@@ -93,7 +116,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         }, 500);
     }
-
 
     @Override
     public void onListFragmentInteraction(Movie movie) {

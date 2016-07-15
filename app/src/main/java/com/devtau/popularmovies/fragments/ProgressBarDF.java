@@ -1,4 +1,4 @@
-package com.devtau.popularmovies;
+package com.devtau.popularmovies.fragments;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import com.devtau.popularmovies.R;
 /**
  * Dialog to show to user some background app work
  */

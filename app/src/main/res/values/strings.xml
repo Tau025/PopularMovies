@@ -7,11 +7,17 @@
     <string name="also">\n\nalso\n\n</string>
     <string name="no_internet">Check internet connection.</string>
 
-    <!--enum для вариантов сортировки по умолчанию-->
-    <string name="first_fresh">first fresh</string>
-    <string name="first_old">first old</string>
-    <string name="first_higher_price">first higher price</string>
-    <string name="first_lower_price">first lower price</string>
-    <string name="alphabetical">A - Z</string>
-    <string name="rev_alphabetical">Z - A</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="action_settings">Settings</string>
+    <string name="pref_sort_order_label">Sort order</string>
+    <string name="pref_sort_order_key" translatable="false">sortOrderKey</string>
+    <string name="pref_sort_order_default" translatable="false">popularity.desc</string>
+    <string-array name="pref_sort_order_values">
+        <item>popularity.desc</item>
+        <item>vote_average.desc</item>
+    </string-array>
+    <string-array name="pref_sort_order_names">
+        <item>Most popular</item>
+        <item>Top rated</item>
+    </string-array>
 </resources>

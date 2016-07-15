@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import com.devtau.popularmovies.MovieFragment.OnListFragmentInteractionListener;
+import com.devtau.popularmovies.fragments.MovieFragment.OnListFragmentInteractionListener;
 import com.devtau.popularmovies.model.Movie;
 import com.devtau.popularmovies.util.Constants;
 import com.devtau.popularmovies.util.Logger;
