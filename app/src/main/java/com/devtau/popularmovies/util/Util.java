@@ -1,49 +1,14 @@
 package com.devtau.popularmovies.util;
 
 import android.content.Context;
-import android.view.View;
-import android.view.ViewGroup;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
 public abstract class Util {
     private static final String LOG_TAG = Util.class.getSimpleName();
-    //даты храним как строки в соответствии с этим форматтером
-    //не работает напрямую с Calendar. его нужно сначала перевести в Date
     public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.UK);
-
-    public static void loopChildren(ViewGroup parent, View.OnClickListener onClickListener) {
-        for (int i = parent.getChildCount() - 1; i >= 0; i--) {
-            if (parent.getChildAt(i) != null) {
-                parent.getChildAt(i).setOnClickListener(onClickListener);
-            }
-        }
-    }
-
-    public static String getStringDateTimeFromCal(Calendar date){
-        return String.format("%02d.%02d %02d:%02d",
-                date.get(Calendar.DAY_OF_MONTH), date.get(Calendar.MONTH) + 1,
-                date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE));
-    }
-
-    public static String getStringDateFromCal(Calendar date, Context context){
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(date.getTimeInMillis());
-        Locale locale = context.getResources().getConfiguration().locale;
-        return String.format(locale, "%02d.%02d.%02d",
-                cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR) % 100);
-    }
-
-    public static String getStringTimeFromCal(Calendar date, Context context){
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(date.getTimeInMillis());
-        Locale locale = context.getResources().getConfiguration().locale;
-        return String.format(locale, "%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
-    }
-
-
+    public static final SimpleDateFormat theMovieDBDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.UK);
 
     public static void logDate(String dateName, Calendar dateToLog, Context context){
         Locale locale = context.getResources().getConfiguration().locale;

@@ -22,6 +22,7 @@ import com.devtau.popularmovies.database.sources.MoviesSource;
 import com.devtau.popularmovies.model.Movie;
 import com.devtau.popularmovies.util.Constants;
 import com.devtau.popularmovies.util.Logger;
+import com.devtau.popularmovies.util.Util;
 import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +33,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class MovieFragment extends Fragment {
@@ -135,7 +139,6 @@ public class MovieFragment extends Fragment {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortOrder = sharedPref.getString(getString(R.string.pref_sort_order_key),
                 getString(R.string.pref_sort_order_default));
-        Logger.d(LOG_TAG, sortOrder);
         weatherTask.execute(sortOrder);
     }
 
@@ -230,32 +233,55 @@ public class MovieFragment extends Fragment {
         }
 
         private List<Movie> parseJson(String JSONString) throws JSONException {
-            // These are the names of the JSON objects that need to be extracted.
-            final String results = "results";
-            final String posterPath = "poster_path";
-            final String id = "id";
-
             JSONObject serverAnswer = new JSONObject(JSONString);
-            JSONArray moviesJsonArray = serverAnswer.getJSONArray(results);
+            JSONArray moviesJsonArray = serverAnswer.getJSONArray(Constants.RESULTS);
 
             List<Movie> moviesList = new ArrayList<>();
             for(int i = 0; i < moviesJsonArray.length(); i++) {
                 JSONObject JSONMovie = moviesJsonArray.getJSONObject(i);
-                int movieID = JSONMovie.getInt(id);
-                String moviePosterPath = JSONMovie.getString(posterPath);
+                long movieID = JSONMovie.getLong(Constants.ID);
+                String movieTitle = JSONMovie.getString(Constants.TITLE);
+                String moviePosterPath = JSONMovie.getString(Constants.POSTER_PATH);
+                String moviePlotSynopsis = JSONMovie.getString(Constants.PLOT_SYNOPSIS);
+                double movieUserRating = JSONMovie.getDouble(Constants.USER_RATING);
 
-                Movie oldMovie = moviesSource.getItemByID(movieID);
-                if(oldMovie != null) {
-                    oldMovie.setPosterPath(moviePosterPath);
-                    moviesSource.update(oldMovie);
-                    moviesList.add(oldMovie);
-                } else {
-                    Movie newMovie = new Movie(movieID, moviePosterPath);
-                    moviesSource.create(newMovie);
-                    moviesList.add(newMovie);
+                Calendar movieReleaseDate = new GregorianCalendar();
+                try {
+                    movieReleaseDate = new GregorianCalendar(1970, 0, 1);
+                    String dateString = JSONMovie.getString(Constants.RELEASE_DATE);
+                    movieReleaseDate.setTime(Util.theMovieDBDateFormat.parse(dateString));
+                } catch (ParseException e) {
+                    Logger.e(LOG_TAG, "while parsing releaseDate from JSON", e);
                 }
+                moviesList.add(updateOrCreateMovie(movieID, movieTitle, moviePosterPath,
+                        moviePlotSynopsis, movieUserRating, movieReleaseDate));
             }
             return moviesList;
+        }
+
+        private Movie updateOrCreateMovie(long movieID, String movieTitle, String moviePosterPath,
+                                          String moviePlotSynopsis, double movieUserRating,
+                                          Calendar movieReleaseDate) {
+            Movie oldMovie = moviesSource.getItemByID(movieID);
+            if(oldMovie != null) {
+                oldMovie.setTitle(movieTitle);
+                oldMovie.setPosterPath(moviePosterPath);
+                oldMovie.setUserRating(movieUserRating);
+
+                //moviePlotSynopsis or movieReleaseDate may be unknown
+                if(!"".equals(moviePlotSynopsis)) {
+                    oldMovie.setPlotSynopsis(moviePlotSynopsis);
+                }
+                if(movieReleaseDate != null) {
+                    oldMovie.setReleaseDate(movieReleaseDate);
+                }
+                return oldMovie;
+            } else {
+                Movie newMovie = new Movie(movieID, movieTitle, moviePosterPath,
+                        moviePlotSynopsis, movieUserRating, movieReleaseDate);
+                moviesSource.create(newMovie);
+                return newMovie;
+            }
         }
 
         @Override

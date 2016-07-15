@@ -4,22 +4,29 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
+import com.devtau.popularmovies.util.Logger;
 import com.devtau.popularmovies.util.Util;
 import java.text.ParseException;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import static com.devtau.popularmovies.database.tables.MoviesTable.*;
 
 public class Movie implements Parcelable{
+    private final String LOG_TAG = Movie.class.getSimpleName();
     private long id;
     private String title;
     private String posterPath;
     private String plotSynopsis;
-    private float userRating;
-    private Calendar releaseDate = Calendar.getInstance();
+    private double userRating;
+    private Calendar releaseDate = new GregorianCalendar(1970, 0, 1);
 
-    public Movie(int id, String posterPath) {
+    public Movie(long id, String title, String posterPath, String plotSynopsis, double userRating, Calendar releaseDate) {
         this.id = id;
+        this.title = title;
         this.posterPath = posterPath;
+        this.plotSynopsis = plotSynopsis;
+        this.userRating = userRating;
+        this.releaseDate = releaseDate;
     }
 
     public Movie(Cursor cursor) {
@@ -27,12 +34,13 @@ public class Movie implements Parcelable{
         title = cursor.getString(cursor.getColumnIndex(TITLE));
         posterPath = cursor.getString(cursor.getColumnIndex(POSTER_PATH));
         plotSynopsis = cursor.getString(cursor.getColumnIndex(PLOT_SYNOPSIS));
-        userRating = 0f;
+        userRating = 0d;
         try {
-            releaseDate = Calendar.getInstance();
+            releaseDate = new GregorianCalendar(1970, 0, 1);
             String dateString = cursor.getString(cursor.getColumnIndex(RELEASE_DATE));
             releaseDate.setTime(Util.dateFormat.parse(dateString));
         } catch (ParseException e) {
+            Logger.e(LOG_TAG, "while parsing releaseDate from Cursor", e);
             e.printStackTrace();
         }
     }
@@ -42,8 +50,8 @@ public class Movie implements Parcelable{
         title = parcel.readString();
         posterPath = parcel.readString();
         plotSynopsis = parcel.readString();
-        userRating = parcel.readFloat();
-        releaseDate = Calendar.getInstance();
+        userRating = parcel.readDouble();
+        releaseDate = new GregorianCalendar(1970, 0, 1);
         releaseDate.setTimeInMillis(parcel.readLong());
     }
 
@@ -68,10 +76,25 @@ public class Movie implements Parcelable{
         this.id = id;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public void setPosterPath(String posterPath) {
         this.posterPath = posterPath;
     }
 
+    public void setPlotSynopsis(String plotSynopsis) {
+        this.plotSynopsis = plotSynopsis;
+    }
+
+    public void setUserRating(double userRating) {
+        this.userRating = userRating;
+    }
+
+    public void setReleaseDate(Calendar releaseDate) {
+        this.releaseDate = releaseDate;
+    }
 
 
     //getters
@@ -91,7 +114,7 @@ public class Movie implements Parcelable{
         return plotSynopsis;
     }
 
-    public float getUserRating() {
+    public double getUserRating() {
         return userRating;
     }
 
@@ -133,7 +156,7 @@ public class Movie implements Parcelable{
         parcel.writeString(title);
         parcel.writeString(posterPath);
         parcel.writeString(plotSynopsis);
-        parcel.writeFloat(userRating);
+        parcel.writeDouble(userRating);
         parcel.writeLong(releaseDate.getTimeInMillis());
     }
 }
