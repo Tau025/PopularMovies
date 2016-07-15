@@ -1,11 +1,9 @@
 package com.devtau.popularmovies.fragments;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +17,7 @@ import com.devtau.popularmovies.R;
 import com.devtau.popularmovies.database.DataSource;
 import com.devtau.popularmovies.database.sources.MoviesSource;
 import com.devtau.popularmovies.model.Movie;
+import com.devtau.popularmovies.model.SortBy;
 import com.devtau.popularmovies.util.Constants;
 import com.devtau.popularmovies.util.Logger;
 import com.devtau.popularmovies.util.Util;
@@ -40,11 +39,13 @@ import java.util.List;
 public class MovieFragment extends Fragment {
     private static final String ARG_ITEMS_LIST = "itemsList";
     private static final String ARG_COLUMN_COUNT = "columnCount";
+    private static final String ARG_SORT_BY = "sortBy";
     private List<Movie> moviesList;
     private int columnCount = 2;
     private OnListFragmentInteractionListener listener;
     private int imageWidth, imageHeight;
     private MyMovieRecyclerViewAdapter rvAdapter;
+    private SortBy sortBy = Constants.DEFAULT_SORT_BY;
 
     public MovieFragment() {
     }
@@ -62,11 +63,12 @@ public class MovieFragment extends Fragment {
         }
     }
 
-    public static MovieFragment newInstance(int columnCount, ArrayList<Movie> moviesList) {
+    public static MovieFragment newInstance(int columnCount, ArrayList<Movie> moviesList, SortBy sortBy) {
         MovieFragment fragment = new MovieFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_ITEMS_LIST, moviesList);
         args.putInt(ARG_COLUMN_COUNT, columnCount);
+        args.putSerializable(ARG_SORT_BY, sortBy);
         fragment.setArguments(args);
         return fragment;
     }
@@ -78,6 +80,7 @@ public class MovieFragment extends Fragment {
         if(getArguments() != null) {
             moviesList = getArguments().getParcelableArrayList(ARG_ITEMS_LIST);
             columnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            sortBy = (SortBy) getArguments().getSerializable(ARG_SORT_BY);
         }
 
         calculateParamsOfThumb();
@@ -105,21 +108,12 @@ public class MovieFragment extends Fragment {
             recyclerView.setAdapter(rvAdapter);
             recyclerView.setHasFixedSize(true);
         }
+        updateMoviesList(sortBy);
         return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        updateMoviesList();
-    }
-
-    private void updateMoviesList() {
-        FetchMoviesTask weatherTask = new FetchMoviesTask();
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String sortOrder = sharedPref.getString(getString(R.string.pref_sort_order_key),
-                getString(R.string.pref_sort_order_default));
-        weatherTask.execute(sortOrder);
+    public void updateMoviesList(SortBy sortBy) {
+        new FetchMoviesTask().execute(sortBy);
     }
 
     @Override
@@ -130,12 +124,12 @@ public class MovieFragment extends Fragment {
 
 
 
-    public class FetchMoviesTask extends AsyncTask<String, Void, List<Movie>> {
+    public class FetchMoviesTask extends AsyncTask<SortBy, Void, List<Movie>> {
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
         private MoviesSource moviesSource = new DataSource(getContext()).getMoviesSource();
 
         @Override
-        protected List<Movie> doInBackground(String... params) {
+        protected List<Movie> doInBackground(SortBy... params) {
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
@@ -148,7 +142,7 @@ public class MovieFragment extends Fragment {
                 // Construct the URL for themoviedb.org query
                 // Possible parameters are available at http://openweathermap.org/API#forecast
                 Uri builtUri = Uri.parse(Constants.MOVIE_BASE_URL).buildUpon()
-                        .appendQueryParameter(Constants.SORT_BY_PARAM, params[0])
+                        .appendQueryParameter(Constants.SORT_BY_PARAM, params[0].getKeyID(getContext()))
                         .appendQueryParameter(Constants.API_KEY_PARAM, Constants.API_KEY_VALUE)
                         .build();
                 URL url = new URL(builtUri.toString());

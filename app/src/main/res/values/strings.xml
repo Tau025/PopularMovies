@@ -7,19 +7,10 @@
     <string name="also">\n\nalso\n\n</string>
     <string name="no_internet">Check internet connection.</string>
 
-    <string name="title_activity_settings">Settings</string>
-    <string name="action_settings">Settings</string>
-    <string name="pref_sort_order_label">Sort order</string>
-    <string name="pref_sort_order_key" translatable="false">sortOrderKey</string>
-    <string name="pref_sort_order_default" translatable="false">popularity.desc</string>
-    <string-array name="pref_sort_order_values">
-        <item>popularity.desc</item>
-        <item>vote_average.desc</item>
-    </string-array>
-    <string-array name="pref_sort_order_names">
-        <item>Most popular</item>
-        <item>Top rated</item>
-    </string-array>
+    <string name="sort_order_most_popular">Most popular</string>
+    <string name="sort_order_top_rated">Top rated</string>
+    <string name="sort_order_most_popular_key">popularity.desc</string>
+    <string name="sort_order_top_rated_key">vote_average.desc</string>
 
     <string name="title_activity_movie_details">Movie details</string>
     <string name="user_rating_formatter" formatted="false">%s/10</string>

@@ -21,6 +21,7 @@ import com.devtau.popularmovies.R;
 import com.devtau.popularmovies.database.DataSource;
 import com.devtau.popularmovies.database.sources.MoviesSource;
 import com.devtau.popularmovies.model.Movie;
+import com.devtau.popularmovies.model.SortBy;
 import com.devtau.popularmovies.util.Constants;
 import com.devtau.popularmovies.util.Logger;
 import com.squareup.picasso.Picasso;
@@ -28,6 +29,8 @@ import com.squareup.picasso.Picasso;
 public class MainActivity extends AppCompatActivity implements
         MovieFragment.OnListFragmentInteractionListener {
     private final String LOG_TAG = MainActivity.class.getSimpleName();
+    private SortBy sortBy = Constants.DEFAULT_SORT_BY;
+    private MovieFragment movieFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements
         new ProgressBarDF().show(getSupportFragmentManager(), ProgressBarDF.TAG);
         MoviesSource moviesSource = new DataSource(this).getMoviesSource();
         //First we'll get cached list from local db. Then we'll send request to server and update if necessary
-        MovieFragment movieFragment =  MovieFragment.newInstance(2, moviesSource.getItemsList());
+        movieFragment = MovieFragment.newInstance(2, moviesSource.getItemsList(), sortBy);
         addFragmentToLayout(R.id.moviesListPlaceholder, movieFragment);
     }
 
@@ -103,8 +106,18 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
+            case R.id.sort_order_toggle:
+                if(sortBy == SortBy.MOST_POPULAR) {
+                    sortBy = SortBy.TOP_RATED;
+                } else {
+                    sortBy = SortBy.MOST_POPULAR;
+                }
+                item.setTitle(sortBy.getDescription(this));
+                if(movieFragment != null) {
+                    movieFragment.updateMoviesList(sortBy);
+                } else {
+                    Logger.e(LOG_TAG, "movieFragment not found");
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
