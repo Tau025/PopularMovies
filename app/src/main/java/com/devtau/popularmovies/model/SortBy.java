@@ -20,6 +20,10 @@ public enum SortBy {
     }
 
     public String getKeyID(Context context) {
-        return context.getString(keyID);
+        if(context != null) {
+            return context.getString(keyID);
+        } else {
+            return "";
+        }
     }
 }

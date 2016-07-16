@@ -18,8 +18,6 @@ public abstract class Constants {
     public static final String USER_RATING = "vote_average";
     public static final String RELEASE_DATE = "release_date";
 
-    public static final String MOVIE_BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
-    public static final String SORT_BY_PARAM = "sort_by";
     public static final String API_KEY_PARAM = "api_key";
-    public static final String API_KEY_VALUE = "dfd949b3dbeb097ef26ee09ef7299615";
+    public static final String API_KEY_VALUE = "";
 }

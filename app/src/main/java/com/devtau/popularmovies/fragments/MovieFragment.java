@@ -140,12 +140,14 @@ public class MovieFragment extends Fragment {
 
             try {
                 // Construct the URL for themoviedb.org query
-                // Possible parameters are available at http://openweathermap.org/API#forecast
-                Uri builtUri = Uri.parse(Constants.MOVIE_BASE_URL).buildUpon()
-                        .appendQueryParameter(Constants.SORT_BY_PARAM, params[0].getKeyID(getContext()))
-                        .appendQueryParameter(Constants.API_KEY_PARAM, Constants.API_KEY_VALUE)
-                        .build();
-                URL url = new URL(builtUri.toString());
+                Uri.Builder builder = new Uri.Builder();
+                builder.scheme("http")
+                        .authority("api.themoviedb.org")
+                        .appendPath("3")
+                        .appendPath("movie")
+                        .appendPath(params[0].getKeyID(getContext()))
+                        .appendQueryParameter(Constants.API_KEY_PARAM, Constants.API_KEY_VALUE);
+                URL url = new URL(builder.build().toString());
                 Logger.d(LOG_TAG, "url: " + String.valueOf(url));
 
                 // Create the request to themoviedb.org, and open the connection
@@ -261,8 +263,12 @@ public class MovieFragment extends Fragment {
         @Override
         protected void onPostExecute(List<Movie> moviesList) {
             super.onPostExecute(moviesList);
-            rvAdapter.setList(moviesList);
-            listener.dismissProgressBar();
+            if(rvAdapter != null) {
+                rvAdapter.setList(moviesList);
+            }
+            if(listener != null) {
+                listener.dismissProgressBar();
+            }
         }
     }
 
