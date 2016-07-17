@@ -32,14 +32,17 @@ public class MyMovieRecyclerViewAdapter extends RecyclerView.Adapter<MyMovieRecy
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.movie = moviesList.get(position);
         Util.loadImageToView(holder.view.getContext(), holder.movie.getPosterPath(), holder.movieThumb,
                 imageWidth, imageHeight);
 
-        holder.view.setOnClickListener(v -> {
-            if (null != listener) {
-                listener.onListFragmentInteraction(holder.movie);
+        holder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (null != listener) {
+                    listener.onListFragmentInteraction(holder.movie);
+                }
             }
         });
     }

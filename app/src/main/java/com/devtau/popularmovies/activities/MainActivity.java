@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
-import com.devtau.popularmovies.BuildConfig;
 import com.devtau.popularmovies.fragments.MovieFragment;
 import com.devtau.popularmovies.fragments.ProgressBarDF;
 import com.devtau.popularmovies.R;
@@ -24,7 +23,6 @@ import com.devtau.popularmovies.model.Movie;
 import com.devtau.popularmovies.model.SortBy;
 import com.devtau.popularmovies.util.Constants;
 import com.devtau.popularmovies.util.Logger;
-import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity implements
         MovieFragment.OnListFragmentInteractionListener {
@@ -126,12 +124,15 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void dismissProgressBar(){
         //delay applied in order to avoid flickering, when connection is fast
-        new Handler().postDelayed(() -> {
-            ProgressBarDF dialog = (ProgressBarDF) getSupportFragmentManager().findFragmentByTag(ProgressBarDF.TAG);
-            if (dialog != null) {
-                dialog.dismiss();
-            } else {
-                Logger.d(LOG_TAG, "dialog already dismissed");
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ProgressBarDF dialog = (ProgressBarDF) getSupportFragmentManager().findFragmentByTag(ProgressBarDF.TAG);
+                if (dialog != null) {
+                    dialog.dismiss();
+                } else {
+                    Logger.d(LOG_TAG, "dialog already dismissed");
+                }
             }
         }, 700);
     }

@@ -1,9 +1,12 @@
 package com.devtau.popularmovies.model;
 
 import android.database.Cursor;
+import android.databinding.BindingAdapter;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
+import android.widget.ImageView;
+import com.devtau.popularmovies.util.Constants;
 import com.devtau.popularmovies.util.Logger;
 import com.devtau.popularmovies.util.Util;
 import java.text.ParseException;
@@ -121,6 +124,26 @@ public class Movie implements Parcelable{
     public Calendar getReleaseDate() {
         return releaseDate;
     }
+
+    public String getReleaseYear() {
+        Calendar defaultDate = new GregorianCalendar(1970, 0, 1);
+        if(getReleaseDate().compareTo(defaultDate) == 0) {
+            return "---";
+        } else {
+            return String.valueOf(getReleaseDate().get(Calendar.YEAR));
+        }
+    }
+
+    public String getFormattedUserRating() {
+        return String.valueOf(userRating) + '/' + 10;
+    }
+
+    @BindingAdapter("imageResource")
+    public static void setImageResource(ImageView view, String url) {
+        Util.loadImageToView(view.getContext(), url, view,
+                Constants.DEFAULT_POSTER_WIDTH, Constants.DEFAULT_POSTER_HEIGHT);
+    }
+
 
     @Override
     public String toString() {

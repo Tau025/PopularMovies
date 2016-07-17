@@ -13,10 +13,4 @@
     <string name="sort_order_top_rated_key">top_rated</string>
 
     <string name="title_activity_movie_details">Movie details</string>
-    <string name="user_rating_formatter" formatted="false">%s/10</string>
-
-    <string name="title_example_text">title</string>
-    <string name="release_date_example_text">releaseDate</string>
-    <string name="user_rating_example_text">userRating</string>
-    <string name="plot_synopsis_example_text">plotSynopsis</string>
 </resources>
